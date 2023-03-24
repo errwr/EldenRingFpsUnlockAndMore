@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace EldenRingFPSUnlockAndMore
+﻿namespace EldenRingFPSUnlockAndMore
 {
     internal class GameData
     {
@@ -66,8 +64,13 @@ namespace EldenRingFPSUnlockAndMore
             00007FF7A30C8D80 | 74 39                      | je eldenring.7FF7A30C8DBB                                      |
             00007FF7A30C8D82 | 41:8BD3                    | mov edx,r11d                                                   |
          */
-        internal const string PATTERN_RESOLUTION_SCALING_FIX = "8B ?? 85 ?? 74 ?? 44 8B ?? ?? 45 85 ?? 74 ?? 41 8B";
-        internal const int PATTERN_RESOLUTION_SCALING_FIX_OFFSET = 4;
+
+        /** Updated for ER v1.05
+         * Credits to techiew
+         * See techiew's documentation for more details
+         */
+        internal const string PATTERN_RESOLUTION_SCALING_FIX = "48 C7 45 B8 FE FF FF FF 48 89 58 10 48 89 70 18 48 89 78 20 0F 29 70 C8 48 8B";
+        internal const int PATTERN_RESOLUTION_SCALING_FIX_OFFSET = 148;
         internal static readonly byte[] PATCH_RESOLUTION_SCALING_FIX_ENABLE = new byte[] { 0xEB };  // jmp
         internal static readonly byte[] PATCH_RESOLUTION_SCALING_FIX_DISABLE = new byte[] { 0x74 }; // je
 
@@ -159,5 +162,24 @@ namespace EldenRingFPSUnlockAndMore
         internal const int PATTERN_CAMRESET_LOCKON_OFFSET = 7;
         internal static readonly byte[] PATCH_CAMRESET_LOCKON_ENABLE = new byte[1] { 0xEB }; // jmp
         internal static readonly byte[] PATCH_CAMRESET_LOCKON_DISABLE = new byte[1] { 0x74 }; // je
+
+        /** Credits to techiew
+         * See techiew's documentation for more details
+         */
+        internal const string PATTERN_REMOVE_VIGNETTE = "F3 0F 10 ?? 50 F3 0F 59 ?? ?? ?? ?? ?? E8 ?? ?? ?? ?? F3 ?? 0F 5C ?? F3 ?? 0F 59 ?? ?? 8D ?? ?? A0 00 00 00";
+        internal const string PATTERN_REMOVE_VIGNETTE_DISABLE = "F3 ?? 0F 59 ??";
+        internal const int PATTERN_REMOVE_VIGNETTE_OFFSET = 23;
+        internal const int PATCH_REMOVE_VIGNETTE_INSTRUCTION_LENGTH = 5;
+        internal static readonly byte[] PATCH_REMOVE_VIGNETTE_ENABLE = new byte[] { 0xF3, 0x0F, 0x5C, 0xC0, 0x90 };
+
+        /** Credits to techiew
+         * See techiew's documentation for more details
+         */
+        internal const string PATTERN_INCREASE_ANIMATION_DISTANCE = "C7 ?? ?? ?? 01 00 00 00 F3 ?? 0F 10 ?? ?? ?? F3 ?? 0F 10 ?? ?? ?? F3 0F 59 ?? ?? ?? ?? ?? ?? 0F 28 ?? F3 ?? 0F 5C ?? ?? 58";
+        internal const string PATTERN_INCREASE_ANIMATION_DISTANCE_DISABLE = "F3 ?? 0F 5E ?? ?? ??";
+        internal const int PATTERN_INCREASE_ANIMATION_DISTANCE_OFFSET = 72;
+        internal const int PATCH_INCREASE_ANIMATION_DISTANCE_INSTRUCTION_LENGTH = 7;
+        internal static readonly byte[] PATCH_INCREASE_ANIMATION_DISTANCE_ENABLE = new byte[] { 0x0F, 0x57, 0xC9, 0x90, 0x90, 0x90, 0x90 };
+
     }
 }

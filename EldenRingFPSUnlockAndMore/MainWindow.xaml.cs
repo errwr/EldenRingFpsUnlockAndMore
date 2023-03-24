@@ -1,20 +1,20 @@
-﻿using System;
-using System.Windows;
-using System.Threading;
-using System.Windows.Media;
+﻿using Microsoft.Win32;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Threading.Tasks;
-using System.ServiceProcess;
-using Microsoft.Win32;
-using System.Runtime.InteropServices;
-using System.Windows.Threading;
-using System.ComponentModel;
 using System.Linq;
 using System.Management;
-using System.Text.RegularExpressions;
-using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Security.Principal;
+using System.ServiceProcess;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace EldenRingFPSUnlockAndMore
 {
@@ -34,12 +34,16 @@ namespace EldenRingFPSUnlockAndMore
         internal long _offset_camrotation = 0x0;
         internal long _offset_camreset = 0x0;
         internal long _offset_timescale = 0x0;
+        internal long _offset_remove_vignette = 0x0;
+        internal long _offset_increase_animation_distance = 0x0;
 
         internal byte[] _patch_hertzlock_disable;
         internal byte[] _patch_resolution_enable;
         internal byte[] _patch_resolution_disable;
         internal byte[] _patch_deathpenalty_disable;
         internal byte[] _patch_camrotation_disable;
+        internal byte[] _patch_remove_vignette_disable;
+        internal byte[] _patch_increase_animation_distance_disable;
 
         internal bool _codeCave_fovmultiplier = false;
         internal const string _DATACAVE_FOV_MULTIPLIER = "dfovMultiplier";
@@ -146,7 +150,7 @@ namespace EldenRingFPSUnlockAndMore
         {
             // check for game
             var procList = Process.GetProcessesByName(Properties.Settings.Default.GameName);
-            if (!procList.Any() || procList[0].HasExited) 
+            if (!procList.Any() || procList[0].HasExited)
                 return false;
 
             // make sure game isn't in half-dead state
@@ -166,7 +170,7 @@ namespace EldenRingFPSUnlockAndMore
             //var procArgs = GetCommandLineOfProcess(procList[0]);
             var eacServices = ServiceController.GetServices().Where(service => service.ServiceName.Contains("EasyAntiCheat")).ToArray();
             var eacRunning = false;
-            ServiceController sc = null; 
+            ServiceController sc = null;
             foreach (var eacService in eacServices)
             {
                 sc = new ServiceController(eacService.ServiceName);
@@ -178,7 +182,7 @@ namespace EldenRingFPSUnlockAndMore
                     break;
                 }
             }
-                
+
             if (eacRunning || !File.Exists(Path.Combine(Path.GetDirectoryName(procList[0].MainModule.FileName), "steam_appid.txt")))
             {
                 // if not prompt the user
@@ -191,21 +195,21 @@ namespace EldenRingFPSUnlockAndMore
                     case MessageBoxResult.No:
                         return await OpenGame();
                     case MessageBoxResult.Yes:
-                    {
-                        var filePath = Path.GetDirectoryName(procList[0].MainModule.FileName);
-                        foreach (var proc in procList)
                         {
-                            proc.Kill();
-                            proc.WaitForExit(3000);
-                            proc.Close();
+                            var filePath = Path.GetDirectoryName(procList[0].MainModule.FileName);
+                            foreach (var proc in procList)
+                            {
+                                proc.Kill();
+                                proc.WaitForExit(3000);
+                                proc.Close();
+                            }
+                            await Task.Delay(2500);
+                            if (sc != null && sc.Status != ServiceControllerStatus.Stopped && sc.Status != ServiceControllerStatus.StopPending)
+                                sc.Stop();
+                            await Task.Delay(2500);
+                            await SafeStartGame(filePath);
+                            return await OpenGame();
                         }
-                        await Task.Delay(2500);
-                        if (sc != null && sc.Status != ServiceControllerStatus.Stopped && sc.Status != ServiceControllerStatus.StopPending)
-                            sc.Stop();
-                        await Task.Delay(2500);
-                        await SafeStartGame(filePath);
-                        return await OpenGame();
-                    }
                 }
             }
             else
@@ -451,8 +455,8 @@ namespace EldenRingFPSUnlockAndMore
             _offset_deathpenalty = patternScan.FindPattern(GameData.PATTERN_DEATHPENALTY) + GameData.PATTERN_DEATHPENALTY_OFFSET;
             Debug.WriteLine($"death penalty found at: 0x{_offset_deathpenalty:X}");
             if (!IsValidAddress(_offset_deathpenalty))
-                _offset_fovmultiplier = 0x0;
-            else 
+                _offset_deathpenalty = 0x0;
+            else
             {
                 _patch_deathpenalty_disable = new byte[GameData.PATCH_DEATHPENALTY_INSTRUCTION_LENGTH];
                 if (!WinAPI.ReadProcessMemory(_gameAccessHwndStatic, _offset_deathpenalty, _patch_deathpenalty_disable, GameData.PATCH_DEATHPENALTY_INSTRUCTION_LENGTH, out _))
@@ -474,6 +478,34 @@ namespace EldenRingFPSUnlockAndMore
             Debug.WriteLine($"cam reset found at: 0x{_offset_camreset:X}");
             if (!IsValidAddress(_offset_camreset))
                 _offset_camreset = 0x0;
+
+            _offset_remove_vignette = patternScan.FindPattern(GameData.PATTERN_REMOVE_VIGNETTE) + GameData.PATTERN_REMOVE_VIGNETTE_OFFSET;
+            Debug.WriteLine($"remove vignette found at: 0x{_offset_remove_vignette:X}");
+            if (!IsValidAddress(_offset_remove_vignette))
+                _offset_remove_vignette = 0x0;
+            else
+            {
+                _patch_remove_vignette_disable = new byte[GameData.PATCH_REMOVE_VIGNETTE_INSTRUCTION_LENGTH];
+                if (!WinAPI.ReadProcessMemory(_gameAccessHwndStatic, _offset_remove_vignette, _patch_remove_vignette_disable, GameData.PATCH_REMOVE_VIGNETTE_INSTRUCTION_LENGTH, out _))
+                    _offset_remove_vignette = 0x0;
+
+                if (!PatternScan.MatchPattern(ref _patch_remove_vignette_disable, GameData.PATTERN_REMOVE_VIGNETTE_DISABLE))
+                    _offset_remove_vignette = 0x0;
+            }
+
+            _offset_increase_animation_distance = patternScan.FindPattern(GameData.PATTERN_INCREASE_ANIMATION_DISTANCE) + GameData.PATTERN_INCREASE_ANIMATION_DISTANCE_OFFSET;
+            Debug.WriteLine($"remove vignette found at: 0x{_offset_increase_animation_distance:X}");
+            if (!IsValidAddress(_offset_increase_animation_distance))
+                _offset_increase_animation_distance = 0x0;
+            else
+            {
+                _patch_increase_animation_distance_disable = new byte[GameData.PATCH_INCREASE_ANIMATION_DISTANCE_INSTRUCTION_LENGTH];
+                if (!WinAPI.ReadProcessMemory(_gameAccessHwndStatic, _offset_increase_animation_distance, _patch_increase_animation_distance_disable, GameData.PATCH_INCREASE_ANIMATION_DISTANCE_INSTRUCTION_LENGTH, out _))
+                    _offset_increase_animation_distance = 0x0;
+
+                if (!PatternScan.MatchPattern(ref _patch_increase_animation_distance_disable, GameData.PATTERN_INCREASE_ANIMATION_DISTANCE_DISABLE))
+                    _offset_increase_animation_distance = 0x0;
+            }
 
             patternScan.Dispose();
         }
@@ -508,7 +540,7 @@ namespace EldenRingFPSUnlockAndMore
             {
                 UpdateStatus("resolution not found...", Brushes.Red);
                 LogToFile("resolution not found...");
-                cbAddWidescreen.IsEnabled = false;
+                cbUltrawideResolution.IsEnabled = false;
             }
 
             if (_offset_deathpenalty == 0x0)
@@ -539,6 +571,20 @@ namespace EldenRingFPSUnlockAndMore
                 cbGameSpeed.IsEnabled = false;
             }
 
+            if (_offset_remove_vignette == 0x0)
+            {
+                UpdateStatus("remove vignette not found...", Brushes.Red);
+                LogToFile("remove vignette not found...");
+                cbRemoveVignette.IsEnabled = false;
+            }
+
+            if (_offset_increase_animation_distance == 0x0)
+            {
+                UpdateStatus("increase animation distance not found...", Brushes.Red);
+                LogToFile("increase animation distance not found...");
+                cbIncreaseAnimationDistance.IsEnabled = false;
+            }
+
             bPatch.IsEnabled = true;
             _running = true;
             PatchGame();
@@ -550,11 +596,11 @@ namespace EldenRingFPSUnlockAndMore
         /// <returns>True if we can patch game, false otherwise.</returns>
         private bool CanPatchGame()
         {
-            if (!_running) 
+            if (!_running)
                 return false;
 
             _gameProc.Refresh();
-            if (!_gameProc.HasExited && _gameProc.Responding) 
+            if (!_gameProc.HasExited && _gameProc.Responding)
                 return true;
 
             ResetGame();
@@ -582,6 +628,8 @@ namespace EldenRingFPSUnlockAndMore
             _offset_camrotation = 0x0;
             _offset_camreset = 0x0;
             _offset_timescale = 0x0;
+            _offset_remove_vignette = 0x0;
+            _offset_increase_animation_distance = 0x0;
             _startup = false;
             _patch_hertzlock_disable = null;
             _patch_deathpenalty_disable = null;
@@ -592,7 +640,9 @@ namespace EldenRingFPSUnlockAndMore
             _memoryCaveGenerator = null;
             cbFramelock.IsEnabled = true;
             cbFov.IsEnabled = true;
-            cbAddWidescreen.IsEnabled = true;
+            cbUltrawideResolution.IsEnabled = true;
+            cbRemoveVignette.IsEnabled = true;
+            cbIncreaseAnimationDistance.IsEnabled = true;
             cbDeathPenalty.IsEnabled = true;
             cbGameSpeed.IsEnabled = true;
             bPatch.IsEnabled = false;
@@ -612,7 +662,9 @@ namespace EldenRingFPSUnlockAndMore
             {
                 PatchFramelock(),
                 PatchFov(),
-                PatchWidescreen(),
+                PatchUltrawideResolution(),
+                PatchRemoveVignette(),
+                PatchIncreaseAnimationDistance(),
                 PatchCamRotation(),
                 PatchCamReset(),
                 PatchDeathPenalty(),
@@ -700,15 +752,15 @@ namespace EldenRingFPSUnlockAndMore
         /// Patch games resolutions.
         /// </summary>
         /// <returns></returns>
-        private bool PatchWidescreen()
+        private bool PatchUltrawideResolution()
         {
-            if (!cbAddWidescreen.IsEnabled || _offset_resolution == 0x0 || !CanPatchGame()) return false;
-            if (cbAddWidescreen.IsChecked == true)
+            if (!cbUltrawideResolution.IsEnabled || _offset_resolution == 0x0 || !CanPatchGame()) return false;
+            if (cbUltrawideResolution.IsChecked == true)
             {
                 WriteBytes(_offset_resolution, _patch_resolution_enable);
                 WriteBytes(_offset_resolution_scaling_fix, GameData.PATCH_RESOLUTION_SCALING_FIX_ENABLE);
             }
-            else if (cbAddWidescreen.IsChecked == false)
+            else if (cbUltrawideResolution.IsChecked == false)
             {
                 WriteBytes(_offset_resolution, _patch_resolution_disable);
                 WriteBytes(_offset_resolution_scaling_fix, GameData.PATCH_RESOLUTION_SCALING_FIX_DISABLE);
@@ -731,6 +783,43 @@ namespace EldenRingFPSUnlockAndMore
             else if (cbDeathPenalty.IsChecked == false)
             {
                 WriteBytes(_offset_deathpenalty, _patch_deathpenalty_disable);
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Patches(remove) game's vignette.
+        /// </summary>
+        private bool PatchRemoveVignette()
+        {
+            if (!cbRemoveVignette.IsEnabled || _offset_remove_vignette == 0x0 || !CanPatchGame()) return false;
+            if (cbRemoveVignette.IsChecked == true)
+            {
+                WriteBytes(_offset_remove_vignette, GameData.PATCH_REMOVE_VIGNETTE_ENABLE);
+            }
+            else if (cbRemoveVignette.IsChecked == false)
+            {
+                WriteBytes(_offset_remove_vignette, _patch_remove_vignette_disable);
+                return false;
+            }
+            return true;
+        }
+
+
+        /// <summary>
+        /// Patches(increase) the game's animation distance.
+        /// </summary>
+        private bool PatchIncreaseAnimationDistance()
+        {
+            if (!cbIncreaseAnimationDistance.IsEnabled || _offset_increase_animation_distance == 0x0 || !CanPatchGame()) return false;
+            if (cbIncreaseAnimationDistance.IsChecked == true)
+            {
+                WriteBytes(_offset_increase_animation_distance, GameData.PATCH_INCREASE_ANIMATION_DISTANCE_ENABLE);
+            }
+            else if (cbIncreaseAnimationDistance.IsChecked == false)
+            {
+                WriteBytes(_offset_increase_animation_distance, _patch_increase_animation_distance_disable);
                 return false;
             }
             return true;
@@ -1143,7 +1232,7 @@ namespace EldenRingFPSUnlockAndMore
         private void BFov0_Click(object sender, RoutedEventArgs e)
         {
             tbFov.Text = "0";
-            if (cbFov.IsChecked == true) 
+            if (cbFov.IsChecked == true)
                 PatchFov();
         }
 
@@ -1152,7 +1241,7 @@ namespace EldenRingFPSUnlockAndMore
             if (Int32.TryParse(tbFov.Text, out int fov) && fov > -91)
             {
                 tbFov.Text = (fov - 5).ToString();
-                if (cbFov.IsChecked == true) 
+                if (cbFov.IsChecked == true)
                     PatchFov();
             }
         }
@@ -1162,7 +1251,7 @@ namespace EldenRingFPSUnlockAndMore
             if (Int32.TryParse(tbFov.Text, out int fov) && fov < 91)
             {
                 tbFov.Text = (fov + 5).ToString();
-                if (cbFov.IsChecked == true) 
+                if (cbFov.IsChecked == true)
                     PatchFov();
             }
         }
@@ -1172,7 +1261,7 @@ namespace EldenRingFPSUnlockAndMore
             if (Int32.TryParse(tbGameSpeed.Text, out int gameSpeed) && gameSpeed > 4)
             {
                 tbGameSpeed.Text = (gameSpeed - 5).ToString();
-                if (cbGameSpeed.IsChecked == true) 
+                if (cbGameSpeed.IsChecked == true)
                     PatchGameSpeed();
             }
         }
@@ -1182,7 +1271,7 @@ namespace EldenRingFPSUnlockAndMore
             if (Int32.TryParse(tbGameSpeed.Text, out int gameSpeed) && gameSpeed < 995)
             {
                 tbGameSpeed.Text = (gameSpeed + 5).ToString();
-                if (cbGameSpeed.IsChecked == true) 
+                if (cbGameSpeed.IsChecked == true)
                     PatchGameSpeed();
             }
         }
@@ -1190,9 +1279,16 @@ namespace EldenRingFPSUnlockAndMore
         private void BGs100_Click(object sender, RoutedEventArgs e)
         {
             tbGameSpeed.Text = "100";
-            if (cbGameSpeed.IsChecked == true) 
+            if (cbGameSpeed.IsChecked == true)
                 PatchGameSpeed();
         }
+
+        private void bLogFolder_Click(object sender, RoutedEventArgs e)
+        {
+            string local = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            Process.Start(Path.Combine(local, "EldenRingFPSUnlockAndMore"));
+        }
+
 
         #endregion
     }

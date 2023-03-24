@@ -1,56 +1,341 @@
-﻿<Window x:Class="EldenRingFPSUnlockAndMore.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:EldenRingFPSUnlockAndMore"
-        xmlns:p="clr-namespace:EldenRingFPSUnlockAndMore.Properties" 
-        mc:Ignorable="d"
-        Title="Elden Ring FPS Unlocker and more" Width="Auto" Height="Auto" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize" Loaded="Window_Loaded" Closing="Window_Closing" >
-    
+﻿<Window
+    x:Class="EldenRingFPSUnlockAndMore.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:EldenRingFPSUnlockAndMore"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:p="clr-namespace:EldenRingFPSUnlockAndMore.Properties"
+    Title="Elden Ring FPS Unlocker and more"
+    Width="Auto"
+    Height="Auto"
+    Closing="Window_Closing"
+    Loaded="Window_Loaded"
+    ResizeMode="CanMinimize"
+    SizeToContent="WidthAndHeight"
+    mc:Ignorable="d">
+
     <Grid x:Name="gMainGrid" Background="#FFF9F9F9">
         <DockPanel>
-            <StackPanel DockPanel.Dock="Top" Margin="10,10,10,0" Width="300" Height="Auto">
+            <StackPanel
+                Width="300"
+                Height="Auto"
+                Margin="10,10,10,0"
+                DockPanel.Dock="Top">
                 <DockPanel LastChildFill="False">
-                    <CheckBox x:Name="cbFramelock" DockPanel.Dock="Left" Margin="0,0,0,0" Height="25" FontSize="14 px" VerticalContentAlignment="Center" Content="Frame rate lock:" ToolTip="Make sure to read the guide" IsChecked="{Binding FrameLockTicked, Source={x:Static p:Settings.Default}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TabIndex="1" />
-                    <TextBox x:Name="tbFramelock" DockPanel.Dock="Right" Margin="0,0,0,0" Width="116" Height="25" FontSize="14 px" VerticalContentAlignment="Center" Text="{Binding FrameLock, Source={x:Static p:Settings.Default}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="3" TabIndex="2" />
+                    <CheckBox
+                        x:Name="cbFramelock"
+                        Height="25"
+                        Margin="0,0,0,0"
+                        VerticalContentAlignment="Center"
+                        Content="Frame rate lock:"
+                        DockPanel.Dock="Left"
+                        FontSize="14 px"
+                        IsChecked="{Binding FrameLockTicked, Source={x:Static p:Settings.Default}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        TabIndex="1"
+                        ToolTip="Make sure to read the guide" />
+                    <TextBox
+                        x:Name="tbFramelock"
+                        Width="116"
+                        Height="25"
+                        Margin="0,0,0,0"
+                        VerticalContentAlignment="Center"
+                        DockPanel.Dock="Right"
+                        FontSize="14 px"
+                        MaxLength="3"
+                        TabIndex="2"
+                        Text="{Binding FrameLock, Source={x:Static p:Settings.Default}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 </DockPanel>
                 <DockPanel Margin="0,5,0,0" LastChildFill="False">
-                    <CheckBox x:Name="cbFov" DockPanel.Dock="Left" Margin="0,0,0,0" Height="25" FontSize="14 px" VerticalContentAlignment="Center" Content="Change FOV by (%):" ToolTip="Increase or decrease" IsChecked="{Binding FovTicked, Source={x:Static p:Settings.Default}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TabIndex="6" />
-                    <Button x:Name="bFovHigher" DockPanel.Dock="Right" Content="&gt;" Margin="0,0,0,0" Width="25" Height="25" FontSize="14 px" BorderThickness="1" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Focusable="False" Click="BFovHigher_Click" />
-                    <TextBox x:Name="tbFov" DockPanel.Dock="Right" Margin="0,0,3,0" Width="30" Height="25" FontSize="14 px" VerticalContentAlignment="Center" Text="{Binding Fov, Source={x:Static p:Settings.Default}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Center" MaxLength="3" TabIndex="7" />
-                    <Button x:Name="bFovLower" DockPanel.Dock="Right" Content="&lt;" Margin="0,0,3,0" Width="25" Height="25" FontSize="14 px" BorderThickness="1" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Focusable="False" Click="BFovLower_Click" />
-                    <Button x:Name="bFov0" DockPanel.Dock="Right" Content="0" Margin="0,0,3,0" Width="27" Height="25" FontSize="14 px" BorderThickness="1" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Focusable="False" Click="BFov0_Click" />
+                    <CheckBox
+                        x:Name="cbFov"
+                        Height="25"
+                        Margin="0,0,0,0"
+                        VerticalContentAlignment="Center"
+                        Content="Change FOV by (%):"
+                        DockPanel.Dock="Left"
+                        FontSize="14 px"
+                        IsChecked="{Binding FovTicked, Source={x:Static p:Settings.Default}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        TabIndex="6"
+                        ToolTip="Increase or decrease" />
+                    <Button
+                        x:Name="bFovHigher"
+                        Width="25"
+                        Height="25"
+                        Margin="0,0,0,0"
+                        Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                        BorderThickness="1"
+                        Click="BFovHigher_Click"
+                        Content="&gt;"
+                        DockPanel.Dock="Right"
+                        Focusable="False"
+                        FontSize="14 px" />
+                    <TextBox
+                        x:Name="tbFov"
+                        Width="30"
+                        Height="25"
+                        Margin="0,0,3,0"
+                        VerticalContentAlignment="Center"
+                        DockPanel.Dock="Right"
+                        FontSize="14 px"
+                        MaxLength="3"
+                        TabIndex="7"
+                        Text="{Binding Fov, Source={x:Static p:Settings.Default}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        TextAlignment="Center" />
+                    <Button
+                        x:Name="bFovLower"
+                        Width="25"
+                        Height="25"
+                        Margin="0,0,3,0"
+                        Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                        BorderThickness="1"
+                        Click="BFovLower_Click"
+                        Content="&lt;"
+                        DockPanel.Dock="Right"
+                        Focusable="False"
+                        FontSize="14 px" />
+                    <Button
+                        x:Name="bFov0"
+                        Width="27"
+                        Height="25"
+                        Margin="0,0,3,0"
+                        Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                        BorderThickness="1"
+                        Click="BFov0_Click"
+                        Content="0"
+                        DockPanel.Dock="Right"
+                        Focusable="False"
+                        FontSize="14 px" />
                 </DockPanel>
                 <DockPanel Margin="0,5,0,0" LastChildFill="False">
-                    <CheckBox x:Name="cbAddWidescreen" DockPanel.Dock="Left" Margin="0,0,0,0" Height="25" FontSize="14 px" VerticalContentAlignment="Center" Content="Widescreen support" ToolTip="Adds your monitors native resolution to the game" IsChecked="{Binding WidescreenTicked, Mode=TwoWay, Source={x:Static p:Settings.Default}, UpdateSourceTrigger=PropertyChanged}" TabIndex="3" />
+                    <CheckBox
+                        x:Name="cbDisableSteamCheck"
+                        Height="25"
+                        Margin="0,0,0,0"
+                        VerticalContentAlignment="Center"
+                        Content="Disable Steam check"
+                        DockPanel.Dock="Left"
+                        FontSize="14 px"
+                        IsChecked="{Binding DisableSteamCheckTicked, Mode=TwoWay, Source={x:Static p:Settings.Default}, UpdateSourceTrigger=PropertyChanged}"
+                        TabIndex="3"
+                        ToolTip="Won't check nor auto-start Steam, untick this if your game doesn't start" />
                 </DockPanel>
-                <DockPanel Margin="0,5,0,0" LastChildFill="False">
-                    <CheckBox x:Name="cbDisableSteamCheck" DockPanel.Dock="Left" Margin="0,0,0,0" Height="25" FontSize="14 px" VerticalContentAlignment="Center" Content="Disable Steam check" ToolTip="Won't check nor auto-start Steam, untick this if your game doesn't start" IsChecked="{Binding DisableSteamCheckTicked, Mode=TwoWay, Source={x:Static p:Settings.Default}, UpdateSourceTrigger=PropertyChanged}" TabIndex="3" />
-                </DockPanel>
-                <Expander x:Name="exGameMods" Height="Auto" FontSize="14 px" Header="Modifications" IsExpanded="True" TabIndex="11">
-                    <Grid x:Name="gSubGrid1" Margin="3,1,0,0" Background="#FFF9F9F9">
+                <Expander
+                    Height="Auto"
+                    Margin="0,4,0,0"
+                    FontSize="14 px"
+                    Header="Ultrawide Support"
+                    IsExpanded="{Binding UltrawideSupportExpanded, Source={x:Static p:Settings.Default}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    TabIndex="11">
+                    <Grid Margin="8,1,0,0" Background="#FFF9F9F9">
                         <StackPanel Width="Auto" Height="Auto">
-                            <CheckBox x:Name="cbCamRotation" Margin="0,3,0,0" Height="25" FontSize="14 px" VerticalContentAlignment="Center" Content="Disable camera auto rotate on movement" ToolTip="isables automatic camera adjustment on movement. Intended for mouse users" IsChecked="{Binding DisableCamRotationTicked, Mode=TwoWay, Source={x:Static p:Settings.Default}, UpdateSourceTrigger=PropertyChanged}" />
-                            <CheckBox x:Name="cbCamLockReset" Margin="0,3,0,0" Height="25" FontSize="14 px" VerticalContentAlignment="Center" Content="Disable camera reset on lock-on" ToolTip="Disables camera centering on lock-on when there is no target" IsChecked="{Binding DisableCamLockResetTicked, Mode=TwoWay, Source={x:Static p:Settings.Default}, UpdateSourceTrigger=PropertyChanged}" />
-                            <CheckBox x:Name="cbDeathPenalty" Margin="0,3,0,0" Height="25" FontSize="14 px" VerticalContentAlignment="Center" Content="Disable Runes loss on death" ToolTip="Disables Runes loss upon death" IsChecked="{Binding DisablePenaltyTicked, Mode=TwoWay, Source={x:Static p:Settings.Default}, UpdateSourceTrigger=PropertyChanged}" TabIndex="16" />
+                            <CheckBox
+                                x:Name="cbUltrawideResolution"
+                                Height="25"
+                                Margin="0,3,0,0"
+                                VerticalContentAlignment="Center"
+                                Content="Ultrawide resolution support"
+                                FontSize="14 px"
+                                IsChecked="{Binding UltrawideResolutionTicked, Mode=TwoWay, Source={x:Static p:Settings.Default}, UpdateSourceTrigger=PropertyChanged}"
+                                ToolTip="Apply your monitors native resolution to the game" />
+                            <CheckBox
+                                x:Name="cbRemoveVignette"
+                                Height="25"
+                                Margin="0,3,0,0"
+                                VerticalContentAlignment="Center"
+                                Content="Remove vignette"
+                                FontSize="14 px"
+                                IsChecked="{Binding RemoveVignetteTicked, Mode=TwoWay, Source={x:Static p:Settings.Default}, UpdateSourceTrigger=PropertyChanged}"
+                                ToolTip="Remove vignette that covers sides of the screen" />
+                            <CheckBox
+                                x:Name="cbIncreaseAnimationDistance"
+                                Height="25"
+                                Margin="0,3,0,0"
+                                VerticalContentAlignment="Center"
+                                Content="Increase animation distance"
+                                FontSize="14 px"
+                                IsChecked="{Binding IncreaseAnimationDistanceTicked, Mode=TwoWay, Source={x:Static p:Settings.Default}, UpdateSourceTrigger=PropertyChanged}"
+                                ToolTip="Increase animation distance" />
+                        </StackPanel>
+                    </Grid>
+                </Expander>
+                <Expander
+                    x:Name="exGameMods"
+                    Height="Auto"
+                    Margin="0,4,0,4"
+                    FontSize="14 px"
+                    Header="Game Modifications"
+                    IsExpanded="{Binding GameModificationsExpanded, Source={x:Static p:Settings.Default}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    TabIndex="11">
+                    <Grid
+                        x:Name="gSubGrid1"
+                        Margin="8,1,0,0"
+                        Background="#FFF9F9F9">
+                        <StackPanel Width="Auto" Height="Auto">
+                            <CheckBox
+                                x:Name="cbCamRotation"
+                                Height="25"
+                                Margin="0,3,0,0"
+                                VerticalContentAlignment="Center"
+                                Content="Disable camera auto rotate on movement"
+                                FontSize="14 px"
+                                IsChecked="{Binding DisableCamRotationTicked, Mode=TwoWay, Source={x:Static p:Settings.Default}, UpdateSourceTrigger=PropertyChanged}"
+                                ToolTip="disables automatic camera adjustment on movement. Intended for mouse users" />
+                            <CheckBox
+                                x:Name="cbCamLockReset"
+                                Height="25"
+                                Margin="0,3,0,0"
+                                VerticalContentAlignment="Center"
+                                Content="Disable camera reset on lock-on"
+                                FontSize="14 px"
+                                IsChecked="{Binding DisableCamLockResetTicked, Mode=TwoWay, Source={x:Static p:Settings.Default}, UpdateSourceTrigger=PropertyChanged}"
+                                ToolTip="Disables camera centering on lock-on when there is no target" />
+                            <CheckBox
+                                x:Name="cbDeathPenalty"
+                                Height="25"
+                                Margin="0,3,0,0"
+                                VerticalContentAlignment="Center"
+                                Content="Disable Runes loss on death"
+                                FontSize="14 px"
+                                IsChecked="{Binding DisablePenaltyTicked, Mode=TwoWay, Source={x:Static p:Settings.Default}, UpdateSourceTrigger=PropertyChanged}"
+                                TabIndex="16"
+                                ToolTip="Disables Runes loss upon death" />
                             <DockPanel Margin="0,3,0,0" LastChildFill="False">
-                                <CheckBox x:Name="cbGameSpeed" DockPanel.Dock="Left" Margin="0,0,0,0" Height="25" FontSize="14 px" VerticalContentAlignment="Center" Content="Game speed (%):" ToolTip="Increase or decrease. Can potentially crash the game in cutscenes, use with caution" IsChecked="{Binding GameSpeedTicked, Mode=TwoWay, Source={x:Static p:Settings.Default}, UpdateSourceTrigger=PropertyChanged}" TabIndex="18"  />
-                                <Button x:Name="bGs100" DockPanel.Dock="Right" Content="100" Margin="0,0,0,0" Width="30" Height="25" FontSize="14 px" BorderThickness="1" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Focusable="False" Click="BGs100_Click" />
-                                <Button x:Name="bGsHigher" DockPanel.Dock="Right" Content="&gt;" Margin="0,0,3,0" Width="25" Height="25" FontSize="14 px" BorderThickness="1" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Focusable="False" Click="BGsHigher_Click" />
-                                <TextBox x:Name="tbGameSpeed" DockPanel.Dock="Right" Margin="0,0,3,0" Width="30" Height="25" FontSize="14 px" VerticalContentAlignment="Center" Text="{Binding GameSpeed, Mode=TwoWay, Source={x:Static p:Settings.Default}, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Center" MaxLength="3" TabIndex="19" />
-                                <Button x:Name="bGsLower" DockPanel.Dock="Right" Content="&lt;" Margin="0,0,3,0" Width="25" Height="25" FontSize="14 px" BorderThickness="1" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Focusable="False" Click="BGsLower_Click" />
+                                <CheckBox
+                                    x:Name="cbGameSpeed"
+                                    Height="25"
+                                    Margin="0,0,0,0"
+                                    VerticalContentAlignment="Center"
+                                    Content="Game speed (%):"
+                                    DockPanel.Dock="Left"
+                                    FontSize="14 px"
+                                    IsChecked="{Binding GameSpeedTicked, Mode=TwoWay, Source={x:Static p:Settings.Default}, UpdateSourceTrigger=PropertyChanged}"
+                                    TabIndex="18"
+                                    ToolTip="Increase or decrease. Can potentially crash the game in cutscenes, use with caution" />
+                                <Button
+                                    x:Name="bGs100"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="0,0,0,0"
+                                    Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                                    BorderThickness="1"
+                                    Click="BGs100_Click"
+                                    Content="100"
+                                    DockPanel.Dock="Right"
+                                    Focusable="False"
+                                    FontSize="14 px" />
+                                <Button
+                                    x:Name="bGsHigher"
+                                    Width="25"
+                                    Height="25"
+                                    Margin="0,0,3,0"
+                                    Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                                    BorderThickness="1"
+                                    Click="BGsHigher_Click"
+                                    Content="&gt;"
+                                    DockPanel.Dock="Right"
+                                    Focusable="False"
+                                    FontSize="14 px" />
+                                <TextBox
+                                    x:Name="tbGameSpeed"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="0,0,3,0"
+                                    VerticalContentAlignment="Center"
+                                    DockPanel.Dock="Right"
+                                    FontSize="14 px"
+                                    MaxLength="3"
+                                    TabIndex="19"
+                                    Text="{Binding GameSpeed, Mode=TwoWay, Source={x:Static p:Settings.Default}, UpdateSourceTrigger=PropertyChanged}"
+                                    TextAlignment="Center" />
+                                <Button
+                                    x:Name="bGsLower"
+                                    Width="25"
+                                    Height="25"
+                                    Margin="0,0,3,0"
+                                    Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                                    BorderThickness="1"
+                                    Click="BGsLower_Click"
+                                    Content="&lt;"
+                                    DockPanel.Dock="Right"
+                                    Focusable="False"
+                                    FontSize="14 px" />
                             </DockPanel>
                         </StackPanel>
                     </Grid>
                 </Expander>
-                <Button x:Name="bStart" Margin="0,7,0,0" Width="300" Height="30" FontSize="14 px" IsEnabled="False" Content="Start game without EAC" BorderThickness="1" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" 
-                    Focusable="False" TabIndex="20" IsTabStop="False" Click="bStart_Click" />
-                <Button x:Name="bPatch" Margin="0,7,0,0" Width="300" Height="30" FontSize="14 px" IsEnabled="False" Content="Patch game" BorderThickness="1" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" 
-                    Focusable="False" TabIndex="20" IsTabStop="False" Click="bPatch_Click" />
-                <TextBox x:Name="tbStatus" Margin="0,5,0,0" Width="300" Height="25" FontSize="14 px" FontWeight="Bold" Text="starting up..." TextAlignment="Center" TextWrapping="NoWrap" IsEnabled="False" />
-                <Expander x:Name="exGuide" Margin="0,8,0,0" Height="Auto" FontSize="14 px" Header="ReadMe" IsExpanded="True" TabIndex="22">
-                    <TextBlock Margin="2,6,2,0" FontSize="11 px" TextWrapping="WrapWithOverflow" IsEnabled="False">
+                <Button
+                    x:Name="bStart"
+                    Width="300"
+                    Height="30"
+                    Margin="0,7,0,0"
+                    Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                    BorderThickness="1"
+                    Click="bStart_Click"
+                    Content="Start game without EAC"
+                    Focusable="False"
+                    FontSize="14 px"
+                    IsEnabled="False"
+                    IsTabStop="False"
+                    TabIndex="20" />
+                <Button
+                    x:Name="bPatch"
+                    Width="300"
+                    Height="30"
+                    Margin="0,7,0,0"
+                    Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                    BorderThickness="1"
+                    Click="bPatch_Click"
+                    Content="Patch game"
+                    Focusable="False"
+                    FontSize="14 px"
+                    IsEnabled="False"
+                    IsTabStop="False"
+                    TabIndex="20" />
+                <TextBox
+                    x:Name="tbStatus"
+                    Width="300"
+                    Height="25"
+                    Margin="0,5,0,0"
+                    FontSize="14 px"
+                    FontWeight="Bold"
+                    IsEnabled="False"
+                    Text="starting up..."
+                    TextAlignment="Center"
+                    TextWrapping="NoWrap" />
+                <Expander
+                    Height="Auto"
+                    Margin="0,8,0,0"
+                    FontSize="14 px"
+                    Header="Logging &amp; Settings"
+                    IsExpanded="{Binding LoggingExpanded, Source={x:Static p:Settings.Default}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    TabIndex="22">
+                    <Button
+                        Width="Auto"
+                        Height="30"
+                        Margin="0,7,0,0"
+                        Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                        BorderThickness="1"
+                        Click="bLogFolder_Click"
+                        Content="Open logging &amp; settings folder"
+                        Focusable="False"
+                        FontSize="14 px"
+                        IsEnabled="True"
+                        IsTabStop="False" />
+                </Expander>
+                <Expander
+                    x:Name="exGuide"
+                    Height="Auto"
+                    Margin="0,4,0,0"
+                    FontSize="14 px"
+                    Header="ReadMe"
+                    IsExpanded="{Binding ReadMeExpanded, Source={x:Static p:Settings.Default}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    TabIndex="22">
+                    <TextBlock
+                        Margin="2,6,2,0"
+                        FontSize="11 px"
+                        IsEnabled="False"
+                        TextWrapping="WrapWithOverflow">
                         <TextBlock.Inlines>
                             <Run FontWeight="Bold" Foreground="#FFF00000">DON'T RUN THIS IN ONLINE MODE OR WITH EAC!</Run>
                             <Run FontWeight="Bold" Foreground="#FF0046FF">This patcher does not modify game files, you have to start it every time.</Run>
@@ -61,11 +346,49 @@
                         </TextBlock.Inlines>
                     </TextBlock>
                 </Expander>
-                <Label HorizontalAlignment="Right" FontSize="12 px" TabIndex="22">
-                    <Hyperlink NavigateUri="https://github.com/uberhalit/EldenRingFpsUnlockAndMore" RequestNavigate="Hyperlink_RequestNavigate" Cursor="Hand">
-                        v1.1.0.0 - by uberhalit
-                    </Hyperlink>
-                </Label>
+                <Expander
+                    Height="Auto"
+                    Margin="0,4,0,8"
+                    FontSize="14 px"
+                    Header="Credits"
+                    IsExpanded="{Binding CreditsExpanded, Source={x:Static p:Settings.Default}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    TabIndex="22">
+                    <StackPanel>
+                        <Label
+                            HorizontalAlignment="Right"
+                            FontSize="12 px"
+                            TabIndex="22">
+                            <Hyperlink
+                                Cursor="Hand"
+                                NavigateUri="https://github.com/uberhalit/EldenRingFpsUnlockAndMore"
+                                RequestNavigate="Hyperlink_RequestNavigate">
+                                by uberhalit (original author)
+                            </Hyperlink>
+                        </Label>
+                        <Label
+                            HorizontalAlignment="Right"
+                            FontSize="12 px"
+                            TabIndex="22">
+                            <Hyperlink
+                                Cursor="Hand"
+                                NavigateUri="https://github.com/errwr/EldenRingFpsUnlockAndMore"
+                                RequestNavigate="Hyperlink_RequestNavigate">
+                                ver 1.2.0.0 - by errwr
+                            </Hyperlink>
+                        </Label>
+                        <Label
+                            HorizontalAlignment="Right"
+                            FontSize="12 px"
+                            TabIndex="22">
+                            <Hyperlink
+                                Cursor="Hand"
+                                NavigateUri="https://github.com/techiew/EldenRingMods"
+                                RequestNavigate="Hyperlink_RequestNavigate">
+                                Credits to techiew for various ultrawide features
+                            </Hyperlink>
+                        </Label>
+                    </StackPanel>
+                </Expander>
             </StackPanel>
         </DockPanel>
     </Grid>

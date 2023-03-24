@@ -77,7 +77,7 @@ namespace EldenRingFPSUnlockAndMore
                 throw new ArgumentException("Pattern's bytes and szMask must be of the same size!");
 
             //if (Sse2.IsSupported && Bmi1.IsSupported && Vector.IsHardwareAccelerated)
-                //return FindPattern_SIMD(ref cbMemory, ref cbPattern, szMask);
+            //return FindPattern_SIMD(ref cbMemory, ref cbPattern, szMask);
             //else
             return FindPattern_Native(ref bData, ref cbPattern, szMask);
         }
@@ -178,6 +178,43 @@ namespace EldenRingFPSUnlockAndMore
             }
 
             return -1;
+        }
+
+
+        /// <summary>
+        /// Determine whether a piece of given memory data matches the pattern given.
+        /// </summary>
+        /// <param name="cbMemory">The byte array to scan.</param>
+        /// <param name="szPattern">A string that determines the pattern, '??' acts as wildcard.</param>
+        /// <returns>True if matches, false otherwise.</returns>
+        internal static bool MatchPattern(ref byte[] cbMemory, string szPattern)
+        {
+            string[] saPattern = szPattern.Split(' ');
+            string szMask = "";
+            for (int i = 0; i < saPattern.Length; i++)
+            {
+                if (saPattern[i] == "??")
+                {
+                    szMask += "?";
+                    saPattern[i] = "0";
+                }
+                else szMask += "x";
+            }
+            byte[] cbPattern = new byte[saPattern.Length];
+            for (int i = 0; i < saPattern.Length; i++)
+                cbPattern[i] = Convert.ToByte(saPattern[i], 0x10);
+
+            if (cbPattern == null || cbPattern.Length == 0)
+                throw new ArgumentException("Pattern's length is zero!");
+            if (cbPattern.Length != szMask.Length)
+                throw new ArgumentException("Pattern's bytes and szMask must be of the same size!");
+
+            for (int i = 0; i < cbPattern.Length; i++)
+            {
+                if (szMask[i] == 'x' && cbPattern[i] != cbMemory[i])
+                    return false;
+            }
+            return true;
         }
     }
 }
