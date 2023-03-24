@@ -1,3 +1,49 @@
+# About this repository
+## TL;DL
+I'm currently maintaining this repository for myself. It's based on uberhalit's work.
+
+Anyone is welcome to contribute to this repository! 😆
+
+## Long version
+I came back to Elden Ring a few days ago. It was unfortunate that FromSoftware never added support for ultrawide screen in this game so I started to look for solutions and mods.
+
+I came across uberhalit's work. I quite liked it but its widescreen support was not working. 
+
+I later found techiew's mods. His widescreen mod worked flawlessly and the "remove vignette" was also quite nice since I'm using a 32:9 ultrawide screen.
+However, his uncap fps mod crashed the game for me (stuck in blackscreen).
+
+After experimenting with different mods I decided to work on my own version based on uberhalit's work. It looks like uberhalit isn't actively maintaining the repository anymore.
+
+## Changelogs
+## Version 1.2.0
+
+**General changes**
+- Added a new tab "Credits"
+- Added a new tab "Logging & Settings"
+   - User can access the logging & settings folder used by this app (which existed in the previous version too)
+- Tab open/closed will now be saved. The app will remember user's selections the next time it's opened.
+- Some generic UI changes and text changes
+- Some generic auto codes clean-up
+
+
+**Ultrawide changes**
+- Renamed "Widescreen" -> "Ultrawide"
+- Added a new tab "Ultrawide Support" with 3 features
+   - Ultrawide resolution support
+   - Remove vignette
+   - Increase animation distance
+- Thanks for techiew's codes for making these features possible
+- Currently all 3 features are working with Elden Ring v1.09 in my environment
+
+
+**Fixes**
+- Fixed an issue that "Ultrawide resolution support" feature was not working
+- Fixed an issue that when "Disable runes loss on death" feature is not functioning, "Change FOV" feature will be disabled and grayed out
+- Fixed a text error in the tooltip of "Disable camera auto rotate on movement"
+
+
+
+## Version 1.1.0 by uberhalit (original author) - Below is his original README
 # Elden Ring FPS Unlocker and more
 A small utility to remove frame rate limit, change FOV (Field of View), add widescreen supprt, alter Game Speed and various game modifications for [Elden Ring](https://en.bandainamcoent.eu/elden-ring/elden-ring) written in C#. More features soon!
 Patches games memory while running, does not modify any game files. Works with every game version (legit steam & oh-not-so-legit), should work with all future updates.
