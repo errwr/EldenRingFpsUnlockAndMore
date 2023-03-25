@@ -22,7 +22,7 @@ After experimenting with different mods I decided to work on my own version base
 - Added a new tab "Logging & Settings"
    - User can access the logging & settings folder used by this app (which existed in the previous version too)
 - Tab open/closed will now be saved. The app will remember user's selections the next time it's opened.
-- Added the missing icon in the original repository
+- Added back the original app icon that was missing
 - Some generic UI changes and text changes
 - Some generic auto codes clean-up
 
@@ -42,7 +42,7 @@ After experimenting with different mods I decided to work on my own version base
 - Fixed a text error in the tooltip of "Disable camera auto rotate on movement"
 
 **Credits**
-- This repository is based on uberhalit's work.
+- This repository is based on **uberhalit**'s work.
    - Thanks **uberhalit**, the original author, for creating the original app.
    - [uberhalit's repository](https://github.com/uberhalit/EldenRingFpsUnlockAndMore)
 - Thanks to **techiew**'s codes for making all those ultrawide features possible
