@@ -14,7 +14,7 @@ However, his uncap fps mod crashed the game for me (stuck in blackscreen).
 
 After experimenting with different mods I decided to work on my own version based on uberhalit's work. It looks like uberhalit isn't actively maintaining the repository anymore.
 
-## Changelogs
+# Changelogs
 ## Version 1.2.0
 
 **General changes**
@@ -22,6 +22,7 @@ After experimenting with different mods I decided to work on my own version base
 - Added a new tab "Logging & Settings"
    - User can access the logging & settings folder used by this app (which existed in the previous version too)
 - Tab open/closed will now be saved. The app will remember user's selections the next time it's opened.
+- Added the missing icon in the original repository
 - Some generic UI changes and text changes
 - Some generic auto codes clean-up
 
@@ -32,7 +33,6 @@ After experimenting with different mods I decided to work on my own version base
    - Ultrawide resolution support
    - Remove vignette
    - Increase animation distance
-- Thanks for techiew's codes for making these features possible
 - Currently all 3 features are working with Elden Ring v1.09 in my environment
 
 
@@ -41,7 +41,12 @@ After experimenting with different mods I decided to work on my own version base
 - Fixed an issue that when "Disable runes loss on death" feature is not functioning, "Change FOV" feature will be disabled and grayed out
 - Fixed a text error in the tooltip of "Disable camera auto rotate on movement"
 
-
+**Credits**
+- This repository is based on uberhalit's work.
+   - Thanks **uberhalit**, the original author, for creating the original app.
+   - [uberhalit's repository](https://github.com/uberhalit/EldenRingFpsUnlockAndMore)
+- Thanks to **techiew**'s codes for making all those ultrawide features possible
+   - [techiew's repository](https://github.com/techiew/EldenRingMods)
 
 ## Version 1.1.0 by uberhalit (original author) - Below is his original README
 # Elden Ring FPS Unlocker and more
